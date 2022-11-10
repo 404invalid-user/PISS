@@ -1,0 +1,23 @@
+{
+    "app-uuid": "4f45r434cv4rrv",
+    "port": 5000,
+    "domain": "domain.com",
+    "maxUploadSize": 500,
+    "isProxied": true,
+    "useSsl": true,
+    "name": "PISS",
+    "description": "Paramount Image Server Selfhost (PISS) is the ASS alternative that's easy to setup and use on managed hosting such as snakecrafthosting.com",
+    "motd": ["your images in a folder", "why?", "how to share with x?", "gif or jif?", "jif is peanut butter"],
+    "dbType": "mysql",
+    "mysql": {
+        "host": "us-mi1.schost.us", 
+        "user":"u94_orxOesCsj6", 
+        "password": "W710VpnpFD2+=F10WgQmKwxF",
+        "database": "s94_test",
+        "connectionLimit": 5,
+        "allowPublicKeyRetrieval": true
+    },
+    "storageFormat": "YYYY/MM/DD/",
+    "firstStart": false
+    
+}
