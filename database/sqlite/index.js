@@ -1,4 +1,4 @@
-const logger = require('../../process-log');
+const logger = require('../../utils/process-log');
 const sqlite3 = require('sqlite3');
 
 //TODO: make db

@@ -8,8 +8,8 @@ function append(text) {
     fs.appendFileSync(__dirname + '/log.log', text + '\n', function(err) {
         if (err) console.error(chalk.red('Error writing logs to file: ' + err))
     })
-    if (process.env.LOGHOOK) {
-        const webhookClient = new WebhookClient({ url: process.env.LOGHOOK });
+    if (process.env.DISCORD_WEBHOOK && process.env.DISCORD_WEBHOOK != 'NONE') {
+        const webhookClient = new WebhookClient({ url: process.env.DISCORD_WEBHOOK });
         webhookClient.send({ content: text.toString() });
     }
 }

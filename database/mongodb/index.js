@@ -1,4 +1,4 @@
-const logger = require('../../process-log');
+const logger = require('../../utils/process-log');
 const mongoose = require('mongoose');
 
 

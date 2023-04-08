@@ -1,0 +1,19 @@
+installer api (only works if installed = false or no confifg)
+
+signup api if config has signup=true
+
+login api 
+- login with discord
+
+upload api
+
+
+make token api
+
+delete token api
+
+delete upload api
+
+uploads api
+
+view upload api (copy ass)

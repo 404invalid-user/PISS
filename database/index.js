@@ -1,4 +1,4 @@
-const logger = require('../process-log');
+const logger = require('../utils/process-log');
 
 let db;
 if (process.env.dbType === 'mysql') {

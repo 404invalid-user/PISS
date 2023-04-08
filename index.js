@@ -29,17 +29,74 @@ app.use((req, res, next) => {
 });
 app.use(async (req, res, next) => {
     req.user = null;
-    if (!req.cookies.id || !req.cookies.token) return next()
-    const currentUser = await db.cache.lookup('user', req.cookies.id).catch((e) => {});
-    if (currentUser == null) return next();
-    const currentToken = currentUser.tokens.filter(t => t.token == req.cookies.token)[0];
-    if (!currentToken) return next();
-    currentToken.lastUsed = Date.now();
-    currentToken.uses++;
-    currentUser.save();
-    req.user = await currentUser;
+    let userid;
+    let token;
+
+    //get id from available auth methods 
+    if (req.cookies.id && req.cookies.token) {
+        userid = req.cookies.id;
+        token = req.cookies.token;
+    } else if (req.headers.authorization && req.headers.authorization.split(' ').length >=2) {
+        userid = req.headers.authorization.split(' ')[0];
+        token =req.headers.authorization.split(' ')[1];
+    } else if (req.body.auth.id && req.body.auth.token) {
+        userid = req.body.auth.id;
+        token = req.body.auth.token;
+    } else {
+        req.user = {
+            authError: "no valid id and token provided"
+        }
+        return next();
+    }
+
+    //get session
+    let currentSession;
+    try {
+        currentSession = await db.getSession(userid, token);
+    } catch(e) {
+        logger.error(e.stack || e);
+        req.user = {
+            authError: "could not get session from database"
+        }
+        return next();
+    }
+    if (currentSession === null || currentSession === undefined || currentSession === '') {
+        req.user = {
+            authError: "invalid or no session"
+        }
+        return next();
+    }
+
+    //get user
+    let currentUser;
+    try {
+        currentUser = await db.getUser(userid);
+    } catch(e) {
+        logger.error(e.stack || e);
+        req.user = {
+            authError: "could not get user from database"
+        }
+        return next();
+    }
+
+    if (currentUser === null || currentUser === undefined || currentUser === '') {
+        logger.warn("user session was found for user " + userid + " but could not locate user");
+        req.user = {
+            authError: "could not get a user from session"
+        }
+        return next();
+    }
+
+    //update sesion last use time stamp
+    currentSession.lastused = Date.now().toString();
+    currentSession.save();
+
+    req.user = currentUser;
+    req.user['session'] = currentSession;
     return next()
 });
+
+//apply routes 
 
 app.use('/', routes.root);
 app.use('/:image', routes.root);
